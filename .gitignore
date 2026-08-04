@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Config locale (contiene path/impostazioni della macchina)
+.env
+projects.json
+
+# Dati dei progetti indicizzati (default locale)
+projects/
+
+# Editor / tool locali
+.obsidian/
+.vscode/
+.idea/
+
+# Varie
+*.log
+.DS_Store
+Thumbs.db
