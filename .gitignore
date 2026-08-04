@@ -11,6 +11,9 @@ projects.json
 # Dati dei progetti indicizzati (default locale)
 projects/
 
+# Materiale promozionale (video, build artifacts)
+promo/
+
 # Editor / tool locali
 .obsidian/
 .vscode/
