@@ -8,6 +8,7 @@
   <img src="https://img.shields.io/badge/vector%20db-Qdrant-red" alt="Qdrant">
   <img src="https://img.shields.io/badge/embeddings-Ollama-black" alt="Ollama">
   <img src="https://img.shields.io/badge/platform-Windows-lightgrey" alt="Windows">
+  <a href="https://www.tiktok.com/@fortresssolitude/video/7670279294580559126"><img src="https://img.shields.io/badge/▶%20demo-TikTok-black?logo=tiktok" alt="Watch the demo on TikTok"></a>
 </p>
 
 # CEREBRO — the external brain for your projects
@@ -21,6 +22,8 @@ AI coding agents (Claude Code, GitHub Copilot, …) forget your project docs at 
 - **Multi-project**: every project gets its own isolated collection — project `helix` → collection `CRB_helix`. One brain, many projects, no cross-contamination.
 - **100% local**: embeddings via Ollama, vector storage via Qdrant. No cloud, no API keys, your docs never leave your machine.
 - **Agent-native**: CEREBRO generates ready-made `CLAUDE.md` / `copilot-instructions.md` blocks so agents learn how to query the brain by themselves.
+
+> ▶ **60-second demo:** [watch CEREBRO on TikTok](https://www.tiktok.com/@fortresssolitude/video/7670279294580559126)
 
 ## How it works
 
