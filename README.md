@@ -164,9 +164,26 @@ Then set the `CEREBRO_HOME` environment variable to the absolute repo path (e.g.
 
 ## Commands and usage
 
-Every script accepts `--project <name>` (or the `PROJECT` env var). Project names are sanitized: `My App` → slug `my_app` → collection `CRB_my_app`.
+### Interactive menu (recommended): `/cerebro`
 
-### Command reference
+With the skill installed (see [Installation](#4-cerebro-skill-for-claude-code-optional-but-recommended)), every operation is one guided menu in Claude Code — no commands to remember:
+
+```
+/cerebro
+```
+
+| Menu option | What it does |
+|---|---|
+| **New project** | Asks name, root, docs paths → registers, indexes, generates agent instructions, verifies |
+| **Re-index** | Updates the brain after docs changed |
+| **Status** | Table of projects, collections, chunk counts, service health |
+| **Remove project** | Removes from registry (collection deletion always double-confirmed) |
+
+The skill asks questions, validates paths, checks Qdrant/Ollama and reports what it did. This is the path described below as "via skill".
+
+### Manual commands (CLI)
+
+Every script accepts `--project <name>` (or the `PROJECT` env var). Project names are sanitized: `My App` → slug `my_app` → collection `CRB_my_app`.
 
 | Command | Purpose |
 |---|---|
