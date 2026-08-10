@@ -93,7 +93,81 @@ python scripts\register_project.py instructions <name> --tool both --graphify
 Writes both `CLAUDE.md` and `.github/copilot-instructions.md` with the same
 CEREBRO RAG block (and optional Graphify block).
 
-## 4. Final verification
+## 4. `/cerebro` slash command for GitHub Copilot
+
+GitHub Copilot doesn't have a skill system like Claude Code, but you can add
+CEREBRO as a **global custom instruction** that makes `/cerebro` work as a
+slash command in Copilot Chat (VS Code, JetBrains, CLI).
+
+### Setup
+
+Open Copilot Chat settings and add the following to your **Custom Instructions**
+(VS Code: `github.copilot.chat.customInstructions`, or edit
+`~/.github-copilot/copilot-instructions.md` directly):
+
+````markdown
+## CEREBRO — /cerebro slash command
+
+When the user types `/cerebro`, run the CEREBRO interactive menu for
+managing the multi-project RAG brain. CEREBRO lives at `C:\Progetti\CEREBRO`
+(adjust the path to your install):
+
+- Scripts: `C:\Progetti\CEREBRO\scripts\`
+- Python: `C:\Progetti\CEREBRO\.venv\Scripts\python.exe` (or system python)
+- Registry: `C:\Progetti\CEREBRO\projects.json`
+
+### Menu
+
+When `/cerebro` is invoked, present these options (AskUserQuestion style):
+
+1. **New project** — guided setup (name, root, docs paths, agent tools, Graphify)
+2. **Re-index** — re-ingest docs for an existing project
+3. **Status** — list all projects, collections, chunk counts
+4. **Remove project** — remove from registry
+
+### New project flow
+
+Ask one question at a time:
+1. Project name → show slug (lowercase, non-alphanumeric → `_`)
+2. Project root path (verify with ls)
+3. Docs paths (folders/files, default `<root>\docs`)
+4. Agent tools: `both` / `claude` / `copilot`
+5. Graphify knowledge graph: yes/no (appends `<!-- GRAPHIFY:START/END -->` block)
+
+Then run in sequence (stop on first error):
+```powershell
+cd C:\Progetti\CEREBRO
+.venv\Scripts\python scripts\register_project.py add <name> --docs <paths> --root <root>
+.venv\Scripts\python scripts\register_project.py instructions <name> --tool <tool> [--graphify]
+.venv\Scripts\python scripts\ingest_docs.py --project <name>
+```
+
+Verify with:
+```powershell
+.venv\Scripts\python scripts\query_qdrant.py --project <name> count
+.venv\Scripts\python scripts\query_qdrant.py --project <name> search "<query>" --limit 3
+```
+
+### Other commands
+
+- **Re-index**: `.venv\Scripts\python scripts\ingest_docs.py --project <name>`
+- **Status**: `.venv\Scripts\python scripts\register_project.py list` then count per project
+- **Remove**: `.venv\Scripts\python scripts\register_project.py remove <name>` (double-confirm; Qdrant collection is NEVER auto-deleted)
+- **Manual query**: `.venv\Scripts\python scripts\query_qdrant.py --project <name> search "<query>"`
+
+### Rules
+
+- Always validate paths before registering
+- Never DELETE Qdrant collections without double confirmation
+- If a script fails, show stderr and apply diagnosis table
+- Prerequisites: Qdrant on :6333, Ollama on :11434 (docker start qdrant / ollama serve if down)
+````
+
+Replace `C:\Progetti\CEREBRO` with your actual CEREBRO install path.
+
+Once configured, typing `/cerebro` in Copilot Chat opens the menu. Copilot
+acts as the interactive guide, asking questions and running scripts — the
+same experience as the Claude Code skill.
 
 ```powershell
 python scripts\register_project.py list

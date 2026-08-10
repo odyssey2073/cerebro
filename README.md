@@ -175,6 +175,9 @@ With the skill installed (see [Installation](#4-cerebro-skill-for-claude-code-op
 /cerebro
 ```
 
+GitHub Copilot also supports `/cerebro` as a global custom instruction — see
+[INSTALL.md §4](INSTALL.md#4-cerebro-slash-command-for-github-copilot) for setup.
+
 | Menu option | What it does |
 |---|---|
 | **New project** | Asks name, root, docs paths → registers, indexes, generates agent instructions, verifies |
