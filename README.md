@@ -70,7 +70,7 @@ flowchart LR
 2. The question is embedded with the same model, and Qdrant returns the most semantically similar chunks.
 3. The agent reads the retrieved context and answers grounded in your actual docs — no invented conventions.
 
-The `instructions` command writes a `<!-- CEREBRO:START/END -->` block into the project's `CLAUDE.md` and/or `.github/copilot-instructions.md`, so the agent discovers the query command automatically at every session. Re-running updates the block without touching the rest of the file.
+The `instructions` command writes a `<!-- CEREBRO:START/END -->` block into the project's `CLAUDE.md` and/or `.github/copilot-instructions.md`, so the agent discovers the query command automatically at every session. Add `--graphify` to also include a `<!-- GRAPHIFY:START/END -->` block with code-level knowledge graph rules (`graphify query`, `graphify path`, `graphify explain`, `graphify update .`). Re-running updates both blocks without touching the rest of the file.
 
 ## Prerequisites
 
@@ -193,7 +193,7 @@ Every script accepts `--project <name>` (or the `PROJECT` env var). Project name
 | `register_project.py add <name> --docs <paths...> [--root <path>]` | Register a project: docs folders + root |
 | `register_project.py list` | List registered projects, collections, docs paths |
 | `register_project.py remove <name>` | Remove from registry (Qdrant collection stays) |
-| `register_project.py instructions <name> [--tool claude\|copilot\|both]` | Generate/update `CLAUDE.md` and/or `copilot-instructions.md` in the project |
+| `register_project.py instructions <name> [--tool claude\|copilot\|both] [--graphify]` | Generate/update `CLAUDE.md` and/or `copilot-instructions.md` in the project. `--graphify` adds a code-level knowledge graph block |
 | `ingest_docs.py --project <name> [paths...]` | Index (or re-index) the project's docs into Qdrant |
 | `query_qdrant.py --project <name> search "<query>" [--limit N] [--source F]` | Semantic search over the project's chunks |
 | `query_qdrant.py --project <name> count` | Count indexed points |
@@ -230,7 +230,42 @@ python scripts\register_project.py instructions helix
 # only one of them:
 python scripts\register_project.py instructions helix --tool claude
 python scripts\register_project.py instructions helix --tool copilot
+# include Graphify code-level knowledge graph block:
+python scripts\register_project.py instructions helix --tool both --graphify
 ```
+
+### Claude Code configuration (CLAUDE.md)
+
+When `--tool claude` (or `both`) is used, `register_project.py instructions` writes
+a `<!-- CEREBRO:START/END -->` block into the project's `CLAUDE.md`. Claude Code
+reads this file automatically at session start, gaining the ability to query the
+project's Qdrant collection for documentation context.
+
+If `--graphify` is also passed, a `<!-- GRAPHIFY:START/END -->` block is appended
+with rules for the Graphify code-level knowledge graph (`graphify query`,
+`graphify path`, `graphify explain`, `graphify update .`).
+
+Generated `CLAUDE.md` structure:
+```
+<!-- CEREBRO:START -->
+## CEREBRO RAG — project context
+...query command + rules...
+<!-- CEREBRO:END -->
+
+<!-- GRAPHIFY:START -->      ← only with --graphify
+## Graphify — Knowledge Graph (code)
+...graphify commands + rules...
+<!-- GRAPHIFY:END -->
+```
+
+### GitHub Copilot configuration (.github/copilot-instructions.md)
+
+When `--tool copilot` (or `both`) is used, the same blocks are written to
+`.github/copilot-instructions.md`. GitHub Copilot Chat loads this file
+automatically — same structure, same rules, same query capabilities as Claude Code.
+
+Both files are kept in sync: re-running `instructions` updates the blocks in place
+without touching the rest of the file. No manual editing needed after initial setup.
 
 **4. Verify** — count indexed chunks and try a search:
 

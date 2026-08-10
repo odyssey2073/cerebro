@@ -47,16 +47,51 @@ venv. Alternatively edit the first section of
 `%USERPROFILE%\.claude\skills\cerebro\SKILL.md` and replace the `CEREBRO_HOME`
 references with the real path.
 
-## 3. GitHub Copilot integration (per project)
+### Claude Code — automatic context via CLAUDE.md
 
-For each registered project:
+After registering a project, generate the `CLAUDE.md` instructions:
+
+```powershell
+python scripts\register_project.py instructions <name> --tool claude
+```
+
+This writes a `<!-- CEREBRO:START/END -->` block into the project's `CLAUDE.md`.
+Claude Code reads this file at session start and automatically knows how to query
+the project's Qdrant collection for documentation context.
+
+If the project uses [Graphify](https://github.com/algorithmic-archives/graphify)
+for code-level knowledge graphs, add `--graphify`:
+
+```powershell
+python scripts\register_project.py instructions <name> --tool claude --graphify
+```
+
+This appends a `<!-- GRAPHIFY:START/END -->` block with code graph rules
+(`graphify query`, `graphify path`, `graphify explain`, `graphify update .`).
+
+Re-running `instructions` updates the blocks in place — no duplication, no
+manual cleanup needed.
+
+### GitHub Copilot — automatic context via copilot-instructions.md
+
+Same as Claude, but targets `.github/copilot-instructions.md`:
 
 ```powershell
 python scripts\register_project.py instructions <name> --tool copilot
+python scripts\register_project.py instructions <name> --tool copilot --graphify
 ```
 
-Creates `.github\copilot-instructions.md` in the project root: Copilot Chat
-loads it automatically and knows how to query the `CRB_<name>` collection.
+GitHub Copilot Chat loads this file automatically. Structure and capabilities
+are identical to the Claude Code setup.
+
+### Both agents at once
+
+```powershell
+python scripts\register_project.py instructions <name> --tool both --graphify
+```
+
+Writes both `CLAUDE.md` and `.github/copilot-instructions.md` with the same
+CEREBRO RAG block (and optional Graphify block).
 
 ## 4. Final verification
 
