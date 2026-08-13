@@ -14,6 +14,7 @@ from pathlib import Path
 
 from project_config import (
     collection_for,
+    collections_for,
     docs_paths_for,
     load_registry,
     sanitize_project_name,
@@ -32,7 +33,7 @@ CEREBRO_RAG_BLOCK = """\
 ## CEREBRO RAG — project context
 
 This project's documentation is semantically indexed in the Qdrant
-collection `{collection}` at http://localhost:6333
+collection `{collections}` at http://localhost:6333
 (embeddings generated via Ollama with the `nomic-embed-text` model).
 
 When you need information about architecture, features, conventions or project
@@ -68,7 +69,7 @@ def cerebro_block(project: str) -> str:
     """Build the CEREBRO RAG block (Claude + Copilot shared)."""
     slug = sanitize_project_name(project)
     body = CEREBRO_RAG_BLOCK.format(
-        collection=collection_for(slug),
+        collections=", ".join(collections_for(slug)),
         query_script=QUERY_SCRIPT,
         slug=slug,
     )
@@ -103,6 +104,8 @@ def cmd_add(args):
     entry = {"docs": args.docs}
     if args.root:
         entry["root"] = args.root
+    if args.collections:
+        entry["collections"] = args.collections
     registry[slug] = entry
     save_registry(registry)
     print(f"Project '{slug}' registered -> collection {collection_for(slug)}")
@@ -110,6 +113,8 @@ def cmd_add(args):
         print(f"  docs: {d}")
     if args.root:
         print(f"  root: {args.root}")
+    for c in args.collections or []:
+        print(f"  extra collection: {c}")
 
 
 def cmd_remove(args):
@@ -134,6 +139,8 @@ def cmd_list(_args):
             print(f"  root: {registry[slug]['root']}")
         for d in docs_paths_for(slug):
             print(f"  docs: {d}")
+        for c in registry[slug].get("collections", []):
+            print(f"  extra collection: {c}")
 
 
 def cmd_instructions(args):
@@ -175,6 +182,8 @@ def main():
     a.add_argument("name", help="Project name (sanitized into a slug)")
     a.add_argument("--docs", nargs="+", required=True, help="Project docs folders/files")
     a.add_argument("--root", help="Project root (for instructions generation)")
+    a.add_argument("--collections", nargs="+",
+                   help="Extra collections (already existing) to query alongside the primary one")
     a.set_defaults(func=cmd_add)
 
     r = sub.add_parser("remove", help="Remove a project from the registry")

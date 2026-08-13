@@ -40,6 +40,20 @@ def collection_for(project: str) -> str:
     return f"CRB_{sanitize_project_name(project)}"
 
 
+def extra_collections_for(project: str) -> list[str]:
+    """Extra collections (already existing) defined in the registry for the project."""
+    slug = sanitize_project_name(project)
+    entry = load_registry().get(slug)
+    if entry and entry.get("collections"):
+        return entry["collections"]
+    return []
+
+
+def collections_for(project: str) -> list[str]:
+    """All collections to query: primary + extras (from the registry)."""
+    return [collection_for(project)] + extra_collections_for(project)
+
+
 def resolve_project(explicit: str | None = None) -> str:
     project = explicit or os.getenv("PROJECT")
     if not project:

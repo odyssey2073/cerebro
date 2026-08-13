@@ -11,7 +11,7 @@ import subprocess
 
 import requests
 
-from project_config import collection_for, load_env, resolve_project
+from project_config import collections_for, load_env, resolve_project
 
 load_env()
 
@@ -30,23 +30,35 @@ def get_embedding(text: str) -> list[float]:
     return resp.json()["embedding"]
 
 
-def search_qdrant(query: str, collection_name: str, limit: int = 5):
+def search_qdrant(query: str, collections: list[str], limit: int = 5):
     vector = get_embedding(query)
     body = {"vector": vector, "limit": limit, "with_payload": True}
-    resp = requests.post(
-        f"{QDRANT_URL}/collections/{collection_name}/points/search",
-        json=body,
-        timeout=30,
-    )
-    resp.raise_for_status()
-    return resp.json().get("result", [])
+    merged = []
+    for coll in collections:
+        try:
+            resp = requests.post(
+                f"{QDRANT_URL}/collections/{coll}/points/search",
+                json=body,
+                timeout=30,
+            )
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  [collection '{coll}' unavailable: {e}]")
+            continue
+        for r in resp.json().get("result", []):
+            r["_collection"] = coll
+            merged.append(r)
+    merged.sort(key=lambda r: r.get("score", 0), reverse=True)
+    return merged[:limit]
 
 
 def build_prompt(query: str, results: list, project: str) -> str:
     lines = [f"Context from project {project}:"]
     for r in results:
         p = r.get("payload", {})
-        lines.append(f"\n--- {p.get('source')} ---\n{p.get('text', '')}")
+        coll = r.get("_collection", "")
+        header = f"{coll}/{p.get('source')}" if coll else p.get("source", "")
+        lines.append(f"\n--- {header} ---\n{p.get('text', '')}")
         paths = p.get("image_paths", [])
         if paths:
             lines.append("\nAssociated images (open with the Read tool to view them):")
@@ -65,11 +77,11 @@ def main():
     args = parser.parse_args()
 
     project = resolve_project(args.project)
-    collection_name = collection_for(project)
+    collections = collections_for(project)
     query = " ".join(args.query)
 
-    print(f"Searching context for: {query} (collection {collection_name})\n")
-    results = search_qdrant(query, collection_name)
+    print(f"Searching context for: {query} (collections {', '.join(collections)})\n")
+    results = search_qdrant(query, collections)
     prompt = build_prompt(query, results, project)
     print("\n=== ENRICHED PROMPT ===\n")
     print(prompt)
