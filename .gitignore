@@ -11,6 +11,9 @@ projects.json
 # Dati dei progetti indicizzati (default locale)
 projects/
 
+# Markdown + immagini estratti dai documenti (generati dall'ingest)
+assets/
+
 # Materiale promozionale (video, build artifacts)
 promo/
 

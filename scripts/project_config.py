@@ -14,6 +14,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 REGISTRY_PATH = REPO_ROOT / "projects.json"
 ENV_PATH = REPO_ROOT / ".env"
+ASSETS_ROOT = REPO_ROOT / "assets"
+
+
+def assets_dir_for(project: str) -> Path:
+    """Asset folder (markdown + images) for a project/collection."""
+    return ASSETS_ROOT / sanitize_project_name(project)
 
 
 def load_env() -> None:

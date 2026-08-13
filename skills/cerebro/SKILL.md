@@ -46,7 +46,10 @@ Ask what to do:
 
 1. **Project name** (free text). Show the resulting slug: lowercase, every non-alphanumeric sequence → `_` (e.g. `My App` → `my_app` → collection `CRB_my_app`).
 2. **Project root** (absolute path, e.g. `C:\Progetti\helix`). Verify existence with `ls`; if missing, ask whether to create it or fix the path.
-3. **Docs paths**: one or more paths (folders or files). Formats: `.md .txt .pdf .docx .xlsx .pptx .html .htm`. Proposed default: `<root>\docs`. Validate each one. If the user has no docs ready, offer the default `CEREBRO_HOME\projects\<slug>\docs` (create it).
+3. **Docs paths**: one or more paths (folders or files). Formats: `.md .txt .pdf .epub .docx .xlsx .pptx .html .htm`. Proposed default: `<root>\docs`. Validate each one. If the user has no docs ready, offer the default `CEREBRO_HOME\projects\<slug>\docs` (create it).
+   - `.pdf` / `.epub` → Markdown **with extracted images**, linked as `![Figure](images/fig_NNNN.png)`; assets in `assets\<slug>\<source>\` (markdown + `images\`).
+   - Images served by a local static server (port `IMAGES_PORT`, default `8777`), auto-started by ingest. In results: `image_paths` (for Claude's `Read`) + `image_urls` (browser).
+   - Scanned PDFs (images only, no text) → not indexable (OCR out of scope).
 4. **Agent tools**: `both` (default) / `claude` / `copilot` → which instruction files to generate.
    - `claude` → `CLAUDE.md`
    - `copilot` → `.github\copilot-instructions.md`

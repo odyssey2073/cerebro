@@ -47,6 +47,12 @@ def build_prompt(query: str, results: list, project: str) -> str:
     for r in results:
         p = r.get("payload", {})
         lines.append(f"\n--- {p.get('source')} ---\n{p.get('text', '')}")
+        paths = p.get("image_paths", [])
+        if paths:
+            lines.append("\nAssociated images (open with the Read tool to view them):")
+            for url, path in zip(p.get("image_urls", []), paths):
+                lines.append(f"- path: {path}")
+                lines.append(f"  url: {url}")
     lines.append("\n---")
     lines.append(f"Question: {query}")
     return "\n".join(lines)

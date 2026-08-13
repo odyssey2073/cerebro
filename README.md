@@ -326,9 +326,25 @@ To avoid repeating `--project`, set `$env:PROJECT = "helix"` in the session.
 | Format | Extraction |
 |---|---|
 | `.md`, `.txt` | direct read |
-| `.pdf`, `.docx`, `.xlsx`, `.pptx`, `.html`, `.htm` | Markdown conversion via [markitdown](https://github.com/microsoft/markitdown) |
+| `.pdf`, `.epub` | Markdown **with extracted images** (see below) |
+| `.docx`, `.xlsx`, `.pptx`, `.html`, `.htm` | Markdown conversion via [markitdown](https://github.com/microsoft/markitdown) (no images) |
 
-Files with other extensions are ignored. Note: scanned PDFs (images only) contain no extractable text — external OCR needed.
+Files with other extensions are ignored. Note: scanned PDFs (images only, no text layer) contain no extractable text — avoid them (external OCR is out of scope).
+
+### Images and figures (PDF / EPUB)
+
+For `.pdf` and `.epub` books, images are **extracted and linked** into the Markdown:
+
+- assets in `assets\<slug>\<source>\document.md` + `images\fig_NNNN.png` (persisted markdown, relative `images/...` links);
+- each Qdrant chunk carries `image_paths` (absolute Windows paths, for Claude's `Read` tool) and `image_urls` (`http://localhost:<port>/...`, for the browser).
+
+Ingest auto-starts the static image server (port `IMAGES_PORT`, default `8777`) if it is not already running. Manual start:
+
+```powershell
+.venv\Scripts\python scripts\serve_images.py
+```
+
+In a search result, the chunk text is shown plus `Image: <url>` and `Path: <path>` lines: Claude opens the `path` with `Read` and sees the figure; you open the `url` in the browser.
 
 ### Quick diagnosis
 

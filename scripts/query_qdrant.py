@@ -63,6 +63,9 @@ def search(query: str, collection_name: str, limit: int = 5, source: str | None 
         print(f"Source: {p.get('source')}")
         print(f"Title: {p.get('title')}")
         print(f"Text:\n{p.get('text', '')}")
+        for url, path in zip(p.get("image_urls", []), p.get("image_paths", [])):
+            print(f"Image: {url}")
+            print(f"  Path: {path}")
     print("---")
 
 
@@ -81,6 +84,9 @@ def scroll(collection_name: str, source: str | None = None, limit: int = 10, off
         print(f"Source: {p.get('source')}")
         print(f"Title: {p.get('title')}")
         print(f"Text:\n{p.get('text', '')}")
+        for url, path in zip(p.get("image_urls", []), p.get("image_paths", [])):
+            print(f"Image: {url}")
+            print(f"  Path: {path}")
     print("---")
 
 
