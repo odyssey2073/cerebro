@@ -36,7 +36,7 @@ flowchart LR
     subgraph CEREBRO
         I[ingest_docs.py<br>chunking + extraction]
         R[projects.json<br>project registry]
-        Q[query_qdrant.py<br>cerebro_bridge.py]
+        Q[query_qdrant.py<br>+ launcher]
     end
 
     subgraph Local["Local services (zero cloud)"]
@@ -66,7 +66,7 @@ flowchart LR
 
 **Read path (query):**
 
-1. The agent (or you) sends a question to `query_qdrant.py` / `cerebro_bridge.py`.
+1. The agent (or you) sends a question to `query_qdrant.py` (or the launcher's Query tab).
 2. The question is embedded with the same model, and Qdrant returns the most semantically similar chunks.
 3. The agent reads the retrieved context and answers grounded in your actual docs — no invented conventions.
 
@@ -155,37 +155,28 @@ EMBEDDING_DIM=768
 
 Edit it only if the services run on different hosts/ports. The collection name is NOT in `.env`: it derives from the project name (`CRB_<slug>`).
 
-### 4. `/cerebro` skill for Claude Code (optional but recommended)
+### 4. CEREBRO Launcher (web SPA)
 
-An interactive guide for every operation below — new project, re-index, status, removal — with prerequisite checks and final verification:
+A single local web interface for **both Claude Code and GitHub Copilot** — no
+per-tool skill or CLI. It manages new project, re-index, status, remove and query
+from the browser:
 
 ```powershell
-xcopy /E /I skills\cerebro "$env:USERPROFILE\.claude\skills\cerebro"
+python scripts\cerebro-launcher.py
 ```
 
-Then set the `CEREBRO_HOME` environment variable to the absolute repo path (e.g. `C:\Progetti\cerebro`). See [INSTALL.md](INSTALL.md) for details.
+Opens http://127.0.0.1:8789. From the UI:
 
-## Commands and usage
-
-### Interactive menu (recommended): `/cerebro`
-
-With the skill installed (see [Installation](#4-cerebro-skill-for-claude-code-optional-but-recommended)), every operation is one guided menu in Claude Code — no commands to remember:
-
-```
-/cerebro
-```
-
-GitHub Copilot also supports `/cerebro` as a global custom instruction — see
-[INSTALL.md §4](INSTALL.md#4-cerebro-slash-command-for-github-copilot) for setup.
-
-| Menu option | What it does |
+| Action | What it does |
 |---|---|
-| **New project** | Asks name, root, docs paths → registers, indexes, generates agent instructions, verifies |
+| **New project** | name, root, docs paths, agent tools (`both`/`claude`/`copilot`), Graphify, extra collections → registers, indexes, generates instructions, verifies |
 | **Re-index** | Updates the brain after docs changed |
 | **Status** | Table of projects, collections, chunk counts, service health |
-| **Remove project** | Removes from registry (collection deletion always double-confirmed) |
+| **Query** | Semantic search with results (score, collection, source, text, images) |
+| **Remove project** | Removes from registry (collection deletion always double-confirmed, never automatic) |
 
-The skill asks questions, validates paths, checks Qdrant/Ollama and reports what it did. This is the path described below as "via skill".
+The launcher drives the same core scripts below. Both agents use it identically;
+per-project query context is still generated automatically (see "Agent instructions").
 
 ### Manual commands (CLI)
 
@@ -202,11 +193,10 @@ Every script accepts `--project <name>` (or the `PROJECT` env var). Project name
 | `query_qdrant.py --project <name> count` | Count indexed points |
 | `query_qdrant.py --project <name> scroll [--limit N] [--offset N]` | Browse raw points |
 | `remove_doc.py --project <name> --source "<relative path>"` | Remove one document's chunks from the index |
-| `cerebro_bridge.py --project <name> "<question>"` | Print an enriched prompt (context + question) for any agent; invokes `gh copilot suggest` if available |
 
 ### Full setup for a new project
 
-> Via skill: `/cerebro` → **New project**. The steps below are the manual equivalent.
+> Via launcher: **New project**. The steps below are the manual equivalent.
 
 Example with project `helix` in `C:\Progetti\helix`. Prerequisites: Qdrant and Ollama running.
 
@@ -291,9 +281,6 @@ python scripts\ingest_docs.py --project helix
 
 # manual query
 python scripts\query_qdrant.py --project helix search "how do I implement feature F09?" --limit 5
-
-# enriched prompt for any agent
-python scripts\cerebro_bridge.py --project helix "how do I implement worktree support?"
 ```
 
 Project maintenance:
@@ -302,24 +289,6 @@ Project maintenance:
 - **New docs folder** → `register_project.py add` with the updated list, then ingest.
 - **Document deleted** → `remove_doc.py --project helix --source "folder\FILE.md"` (`--source` is the path relative to the indexed folder, as shown in the payload).
 - **Retire a project** → `register_project.py remove helix`, then delete the Qdrant collection manually if needed: `curl -X DELETE http://localhost:6333/collections/CRB_helix`.
-
-### PowerShell aliases (optional)
-
-Add to your PowerShell profile (`$PROFILE`), replacing `<CEREBRO_HOME>` with the repo path:
-
-```powershell
-function cerebro-ask { <CEREBRO_HOME>\.venv\Scripts\python "<CEREBRO_HOME>\scripts\cerebro_bridge.py" $args }
-function cerebro-ingest { <CEREBRO_HOME>\.venv\Scripts\python "<CEREBRO_HOME>\scripts\ingest_docs.py" $args }
-```
-
-Usage:
-
-```powershell
-cerebro-ask --project helix "how do I implement feature F09?"
-cerebro-ingest --project helix
-```
-
-To avoid repeating `--project`, set `$env:PROJECT = "helix"` in the session.
 
 ### Supported document formats
 

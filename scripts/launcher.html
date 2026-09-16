@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CEREBRO Launcher</title>
+<style>
+  :root {
+    --bg: #0e1116; --bg2: #141923; --card: #171d29; --border: #262f40;
+    --text: #e6ebf2; --muted: #8b96a8; --accent: #f59e0b; --accent2: #d97706;
+    --danger: #ef4444; --ok: #22c55e; --warn: #f59e0b;
+    --mono: "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    background: radial-gradient(1200px 600px at 50% -10%, #1a2230 0%, var(--bg) 55%);
+    color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .top {
+    display: flex; align-items: center; gap: 12px; padding: 14px 24px;
+    border-bottom: 1px solid var(--border); background: rgba(14,17,22,.7);
+    position: sticky; top: 0; z-index: 10; backdrop-filter: blur(6px);
+  }
+  .top .logo { font-size: 22px; }
+  .top h1 { font-size: 17px; margin: 0; font-weight: 700; }
+  .top .badges { margin-left: auto; display: flex; gap: 8px; }
+  .badge { font-size: 12px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.ok { color: var(--ok); border-color: rgba(34,197,94,.4); }
+  .badge.ko { color: var(--err); border-color: rgba(239,68,68,.4); }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 20px 24px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tabs button {
+    padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg2);
+    color: var(--muted); cursor: pointer; font-size: 14px;
+  }
+  .tabs button.on { border-color: var(--accent); color: var(--text); background: rgba(245,158,11,.10); }
+
+  .panel { display: none; }
+  .panel.on { display: block; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+
+  .field { margin-bottom: 16px; }
+  .field > label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .3px; }
+  input[type="text"], textarea, select {
+    width: 100%; background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+    border-radius: 9px; padding: 10px 12px; font-size: 14px; outline: none; font-family: inherit;
+  }
+  textarea { font-family: var(--mono); font-size: 13px; min-height: 70px; resize: vertical; }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 5px; }
+  .slug { font-family: var(--mono); color: var(--accent); font-size: 13px; margin-top: 5px; }
+
+  .row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .row > .field { flex: 1; min-width: 180px; }
+
+  .pills { display: flex; gap: 8px; }
+  .pill { flex: 1; text-align: center; padding: 9px 12px; border: 1px solid var(--border); border-radius: 9px; cursor: pointer; font-size: 14px; color: var(--muted); background: var(--bg2); }
+  .pill input { display: none; }
+  .pill.on { border-color: var(--accent); color: var(--text); background: rgba(245,158,11,.10); }
+
+  .check { display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 14px; }
+  .check input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+  button.go {
+    padding: 12px 22px; border: none; border-radius: 10px; background: linear-gradient(180deg, var(--accent), var(--accent2));
+    color: #1a1204; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  button.go.danger { background: linear-gradient(180deg, #ef4444, #b91c1c); color: #fff; }
+  button.go:disabled { opacity: .5; cursor: not-allowed; }
+
+  #log { display: none; margin-top: 16px; background: #0b0e13; border: 1px solid var(--border); border-radius: 10px; padding: 14px; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; white-space: pre-wrap; max-height: 320px; overflow-y: auto; color: #c7d2e0; }
+
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.tbl th, table.tbl td { border: 1px solid var(--border); padding: 9px 11px; text-align: left; vertical-align: top; }
+  table.tbl th { background: var(--bg2); color: var(--muted); font-weight: 600; }
+  table.tbl code { background: rgba(0,0,0,.3); padding: 1px 5px; border-radius: 5px; font-family: var(--mono); font-size: 12px; }
+
+  .result { border: 1px solid var(--border); border-radius: 11px; padding: 14px 16px; margin-bottom: 12px; background: var(--card); }
+  .result .rhead { display: flex; gap: 10px; align-items: baseline; margin-bottom: 7px; flex-wrap: wrap; }
+  .result .score { color: var(--accent); font-weight: 700; font-family: var(--mono); }
+  .result .coll { color: var(--muted); font-size: 12px; }
+  .result .src { color: #7dd3fc; font-family: var(--mono); font-size: 12.5px; }
+  .result .text { color: var(--muted); font-size: 13px; line-height: 1.55; white-space: pre-wrap; }
+  .result img { max-width: 100%; border-radius: 8px; margin-top: 8px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="logo">🟧</div>
+  <h1>CEREBRO Launcher</h1>
+  <div class="badges">
+    <span class="badge" id="bqdrant">Qdrant …</span>
+    <span class="badge" id="bollama">Ollama …</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="tabs" id="tabs">
+    <button data-t="create" class="on">Nuovo progetto</button>
+    <button data-t="update">Re-index</button>
+    <button data-t="status">Status</button>
+    <button data-t="query">Query</button>
+    <button data-t="remove">Rimuovi</button>
+  </div>
+
+  <!-- Nuovo progetto -->
+  <div class="panel on" id="p-create">
+    <div class="card">
+      <div class="field">
+        <label>Nome progetto</label>
+        <input type="text" id="c-name" placeholder="My App" autocomplete="off">
+        <div class="slug" id="c-slug"></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Root progetto</label>
+          <input type="text" id="c-root" placeholder="C:\Progetti\myapp" autocomplete="off">
+          <div class="hint">Cartella del progetto (per generare CLAUDE.md / copilot-instructions.md).</div>
+        </div>
+        <div class="field">
+          <label>Agent tools</label>
+          <div class="pills" id="c-tool">
+            <label class="pill on"><input type="radio" name="tool" value="both" checked>both</label>
+            <label class="pill"><input type="radio" name="tool" value="claude">claude</label>
+            <label class="pill"><input type="radio" name="tool" value="copilot">copilot</label>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Docs paths (uno per riga)</label>
+        <textarea id="c-docs" placeholder="C:\Progetti\myapp\docs"></textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Extra collections (opzionale, virgola)</label>
+          <input type="text" id="c-coll" placeholder="CRB_altra" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Graphify</label>
+          <label class="check"><input type="checkbox" id="c-graphify"> aggiungi blocco knowledge graph</label>
+        </div>
+      </div>
+      <button class="go" id="c-go">Crea progetto</button>
+    </div>
+    <pre id="c-log" class="logbox"></pre>
+  </div>
+
+  <!-- Re-index -->
+  <div class="panel" id="p-update">
+    <div class="card">
+      <div class="field">
+        <label>Progetto</label>
+        <select id="u-proj"></select>
+      </div>
+      <button class="go" id="u-go">Re-index</button>
+    </div>
+    <pre id="u-log" class="logbox"></pre>
+  </div>
+
+  <!-- Status -->
+  <div class="panel" id="p-status">
+    <div class="card">
+      <table class="tbl" id="s-table"><thead><tr><th>Progetto</th><th>Collection</th><th>Chunk</th><th>Docs paths</th><th>Extra</th></tr></thead><tbody><tr><td colspan="5">Caricamento…</td></tr></tbody></table>
+      <div style="margin-top:12px"><button class="go" id="s-refresh">Aggiorna</button></div>
+    </div>
+  </div>
+
+  <!-- Query -->
+  <div class="panel" id="p-query">
+    <div class="card">
+      <div class="row">
+        <div class="field">
+          <label>Progetto</label>
+          <select id="q-proj"></select>
+        </div>
+        <div class="field">
+          <label>Limite</label>
+          <input type="text" id="q-limit" value="5" autocomplete="off">
+        </div>
+      </div>
+      <div class="field">
+        <label>Domanda</label>
+        <input type="text" id="q-text" placeholder="cosa dice la spec su …" autocomplete="off">
+      </div>
+      <button class="go" id="q-go">Cerca</button>
+    </div>
+    <div id="q-results" style="margin-top:16px"></div>
+  </div>
+
+  <!-- Rimuovi -->
+  <div class="panel" id="p-remove">
+    <div class="card">
+      <div class="field">
+        <label>Progetto</label>
+        <select id="r-proj"></select>
+      </div>
+      <div class="hint" style="margin-bottom:14px">Rimuove dal registry. La collection Qdrant resta (cancellabile a parte).</div>
+      <button class="go danger" id="r-go">Rimuovi</button>
+    </div>
+    <pre id="r-log" class="logbox"></pre>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+// --- tabs ---
+document.getElementById("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("on"));
+  $("p-" + b.dataset.t).classList.add("on");
+});
+
+// --- pills ---
+document.querySelectorAll(".pills").forEach(g => g.addEventListener("change", () => {
+  g.querySelectorAll(".pill").forEach(p => p.classList.toggle("on", p.querySelector("input").checked));
+}));
+
+// --- slug preview ---
+function slugify(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, ""); }
+$("c-name").addEventListener("input", () => {
+  const s = slugify($("c-name").value);
+  $("c-slug").textContent = s ? "→ collection CRB_" + s : "";
+});
+
+// --- info badges ---
+async function loadInfo() {
+  try {
+    const d = await (await fetch("/api/info")).json();
+    const q = $("bqdrant"), o = $("bollama");
+    q.textContent = "Qdrant " + (d.qdrant_up ? "✓" : "✗"); q.className = "badge " + (d.qdrant_up ? "ok" : "ko");
+    o.textContent = "Ollama " + (d.ollama_up ? "✓" : "✗"); o.className = "badge " + (d.ollama_up ? "ok" : "ko");
+  } catch (e) { /* server down */ }
+}
+
+// --- projects dropdowns ---
+async function loadProjects() {
+  try {
+    const projs = await (await fetch("/api/projects")).json();
+    ["u-proj", "q-proj", "r-proj"].forEach(id => {
+      const sel = $(id); sel.innerHTML = "";
+      projs.forEach(p => { const o = document.createElement("option"); o.value = p; o.textContent = p; sel.appendChild(o); });
+      if (!projs.length) { const o = document.createElement("option"); o.textContent = "(nessun progetto)"; sel.appendChild(o); }
+    });
+  } catch (e) {}
+}
+
+// --- status ---
+async function loadStatus() {
+  const tb = $("s-table").querySelector("tbody");
+  tb.innerHTML = '<tr><td colspan="5">Caricamento…</td></tr>';
+  try {
+    const rows = await (await fetch("/api/status")).json();
+    tb.innerHTML = "";
+    if (!rows.length) { tb.innerHTML = '<tr><td colspan="5">Nessun progetto registrato.</td></tr>'; return; }
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td><b>${r.slug}</b></td><td><code>${r.collection}</code></td><td>${r.chunks === null ? "—" : r.chunks}</td><td>${(r.docs || []).map(d => "<code>" + esc(d) + "</code>").join("<br>")}</td><td>${(r.collections || []).join(", ")}</td>`;
+      tb.appendChild(tr);
+    });
+  } catch (e) { tb.innerHTML = '<tr><td colspan="5">Errore: ' + esc(e) + '</td></tr>'; }
+}
+$("s-refresh").onclick = loadStatus;
+
+// --- log streaming helper ---
+async function runAction(payload, logEl, btn) {
+  logEl.style.display = "block"; logEl.textContent = "";
+  btn.disabled = true;
+  try {
+    const res = await fetch("/api/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const reader = res.body.getReader(); const dec = new TextDecoder();
+    while (true) { const { done, value } = await reader.read(); if (done) break; logEl.textContent += dec.decode(value, { stream: true }); logEl.scrollTop = logEl.scrollHeight; }
+    logEl.textContent += dec.decode(); logEl.scrollTop = logEl.scrollHeight;
+  } catch (err) { logEl.textContent += "\n[ERRORE] " + err + "\n"; }
+  finally { btn.disabled = false; loadProjects(); loadStatus(); }
+}
+
+// --- create ---
+$("c-go").onclick = () => {
+  const name = $("c-name").value.trim();
+  if (!name) { alert("Inserisci il nome del progetto."); return; }
+  const docs = $("c-docs").value.split("\n").map(s => s.trim()).filter(Boolean);
+  if (!docs.length) { alert("Inserisci almeno un docs path."); return; }
+  const payload = {
+    action: "create", name,
+    root: $("c-root").value.trim(),
+    docs,
+    tool: document.querySelector('input[name="tool"]:checked').value,
+    graphify: $("c-graphify").checked,
+    collections: $("c-coll").value.split(",").map(s => s.trim()).filter(Boolean),
+  };
+  runAction(payload, $("c-log"), $("c-go"));
+};
+
+// --- update ---
+$("u-go").onclick = () => runAction({ action: "update", project: $("u-proj").value }, $("u-log"), $("u-go"));
+
+// --- remove ---
+$("r-go").onclick = () => {
+  const p = $("r-proj").value;
+  if (!p) { alert("Nessun progetto."); return; }
+  if (!confirm("Rimuovere '" + p + "' dal registry? (la collection Qdrant resta)")) return;
+  runAction({ action: "remove", project: p }, $("r-log"), $("r-go"));
+};
+
+// --- query ---
+$("q-go").onclick = async () => {
+  const project = $("q-proj").value, query = $("q-text").value.trim(), limit = $("q-limit").value;
+  const out = $("q-results");
+  out.innerHTML = '<div class="hint">Ricerca…</div>';
+  try {
+    const d = await (await fetch("/api/query", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ project, query, limit: parseInt(limit) || 5 }) })).json();
+    if (d.error) { out.innerHTML = '<div class="hint">Errore: ' + esc(d.error) + '</div>'; return; }
+    if (!d.results.length) { out.innerHTML = '<div class="hint">Nessun risultato.</div>'; return; }
+    out.innerHTML = "";
+    d.results.forEach(r => {
+      const el = document.createElement("div");
+      el.className = "result";
+      el.innerHTML = `<div class="rhead"><span class="score">${r.score}</span><span class="coll">${r.collection}</span><span class="src">${esc(r.source)}</span><span class="coll">${esc(r.title)}</span></div><div class="text">${esc(r.text)}</div>` +
+        (r.image_urls || []).map(u => `<img src="${esc(u)}">`).join("");
+      out.appendChild(el);
+    });
+  } catch (e) { out.innerHTML = '<div class="hint">Errore: ' + esc(e) + '</div>'; }
+};
+
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+// --- init ---
+loadInfo(); loadProjects(); loadStatus();
+setInterval(loadInfo, 15000);
+</script>
+</body>
+</html>
