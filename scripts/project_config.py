@@ -14,6 +14,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 REGISTRY_PATH = REPO_ROOT / "projects.json"
 ENV_PATH = REPO_ROOT / ".env"
+ASSETS_ROOT = REPO_ROOT / "assets"
+
+
+def assets_dir_for(project: str) -> Path:
+    """Asset folder (markdown + images) for a project/collection."""
+    return ASSETS_ROOT / sanitize_project_name(project)
 
 
 def load_env() -> None:
@@ -32,6 +38,20 @@ def sanitize_project_name(name: str) -> str:
 
 def collection_for(project: str) -> str:
     return f"CRB_{sanitize_project_name(project)}"
+
+
+def extra_collections_for(project: str) -> list[str]:
+    """Extra collections (already existing) defined in the registry for the project."""
+    slug = sanitize_project_name(project)
+    entry = load_registry().get(slug)
+    if entry and entry.get("collections"):
+        return entry["collections"]
+    return []
+
+
+def collections_for(project: str) -> list[str]:
+    """All collections to query: primary + extras (from the registry)."""
+    return [collection_for(project)] + extra_collections_for(project)
 
 
 def resolve_project(explicit: str | None = None) -> str:

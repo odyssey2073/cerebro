@@ -13,7 +13,7 @@ import sys
 
 import requests
 
-from project_config import collection_for, load_env, resolve_project
+from project_config import collections_for, load_env, resolve_project
 
 load_env()
 
@@ -47,47 +47,77 @@ def qdrant_post(path: str, payload: dict) -> dict:
     return resp.json()
 
 
-def search(query: str, collection_name: str, limit: int = 5, source: str | None = None):
+def search(query: str, collections: list[str], limit: int = 5, source: str | None = None):
     vector = get_embedding(query)
     body = {"vector": vector, "limit": limit, "with_payload": True}
     if source:
         body["filter"] = {"must": [{"key": "source", "match": {"value": source}}]}
-    data = qdrant_post(f"/collections/{collection_name}/points/search", body)
-    results = data.get("result", [])
-    if not results:
+    merged = []
+    for coll in collections:
+        try:
+            data = qdrant_post(f"/collections/{coll}/points/search", body)
+        except requests.RequestException as e:
+            print(f"  [collection '{coll}' unavailable: {e}]", file=sys.stderr)
+            continue
+        for r in data.get("result", []):
+            r["_collection"] = coll
+            merged.append(r)
+    merged.sort(key=lambda r: r.get("score", 0), reverse=True)
+    merged = merged[:limit]
+    if not merged:
         print("No results.")
         return
-    for r in results:
+    for r in merged:
         p = r.get("payload", {})
-        print(f"---\nScore: {r.get('score', 0):.4f}")
+        print(f"---\nScore: {r.get('score', 0):.4f}  (collection: {r.get('_collection')})")
         print(f"Source: {p.get('source')}")
         print(f"Title: {p.get('title')}")
         print(f"Text:\n{p.get('text', '')}")
+        for url, path in zip(p.get("image_urls", []), p.get("image_paths", [])):
+            print(f"Image: {url}")
+            print(f"  Path: {path}")
     print("---")
 
 
-def scroll(collection_name: str, source: str | None = None, limit: int = 10, offset: int = 0):
+def scroll(collections: list[str], source: str | None = None, limit: int = 10, offset: int = 0):
     body = {"limit": limit, "offset": offset, "with_payload": True}
     if source:
         body["filter"] = {"must": [{"key": "source", "match": {"value": source}}]}
-    data = qdrant_post(f"/collections/{collection_name}/points/scroll", body)
-    points = data.get("result", {}).get("points", [])
-    if not points:
-        print("No results.")
-        return
-    for r in points:
-        p = r.get("payload", {})
-        print(f"---\nID: {r.get('id')}")
-        print(f"Source: {p.get('source')}")
-        print(f"Title: {p.get('title')}")
-        print(f"Text:\n{p.get('text', '')}")
-    print("---")
+    for coll in collections:
+        try:
+            data = qdrant_post(f"/collections/{coll}/points/scroll", body)
+        except requests.RequestException as e:
+            print(f"  [collection '{coll}' unavailable: {e}]", file=sys.stderr)
+            continue
+        points = data.get("result", {}).get("points", [])
+        if not points:
+            continue
+        print(f"=== collection: {coll} ===")
+        for r in points:
+            p = r.get("payload", {})
+            print(f"---\nID: {r.get('id')}")
+            print(f"Source: {p.get('source')}")
+            print(f"Title: {p.get('title')}")
+            print(f"Text:\n{p.get('text', '')}")
+            for url, path in zip(p.get("image_urls", []), p.get("image_paths", [])):
+                print(f"Image: {url}")
+                print(f"  Path: {path}")
+        print("---")
 
 
-def count(collection_name: str):
-    data = qdrant_post(f"/collections/{collection_name}/points/count", {"exact": True})
-    total = data.get("result", {}).get("count", 0)
-    print(f"Points in '{collection_name}': {total}")
+def count(collections: list[str]):
+    total_all = 0
+    for coll in collections:
+        try:
+            data = qdrant_post(f"/collections/{coll}/points/count", {"exact": True})
+        except requests.RequestException as e:
+            print(f"  [collection '{coll}' unavailable: {e}]", file=sys.stderr)
+            continue
+        total = data.get("result", {}).get("count", 0)
+        print(f"Points in '{coll}': {total}")
+        total_all += total
+    if len(collections) > 1:
+        print(f"Total: {total_all}")
 
 
 def main():
@@ -110,15 +140,16 @@ def main():
     args = parser.parse_args()
 
     project = resolve_project(args.project)
-    collection_name = collection_for(project)
+    collections = collections_for(project)
+    print(f"Collections: {', '.join(collections)}\n")
 
     try:
         if args.cmd == "search":
-            search(args.query, collection_name, args.limit, args.source)
+            search(args.query, collections, args.limit, args.source)
         elif args.cmd == "scroll":
-            scroll(collection_name, args.source, args.limit, args.offset)
+            scroll(collections, args.source, args.limit, args.offset)
         elif args.cmd == "count":
-            count(collection_name)
+            count(collections)
     except requests.RequestException as e:
         print(f"HTTP error: {e}", file=sys.stderr)
         sys.exit(1)

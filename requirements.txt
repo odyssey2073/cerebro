@@ -2,3 +2,6 @@ qdrant-client
 requests
 python-dotenv
 markitdown[all]
+ebooklib
+markdownify
+beautifulsoup4

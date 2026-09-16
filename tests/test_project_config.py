@@ -40,6 +40,18 @@ class TestCollectionFor:
         assert project_config.collection_for("My App") == "CRB_my_app"
 
 
+class TestAssetsDirFor:
+    def test_under_assets_root(self, monkeypatch):
+        tmp = Path("/tmp/repo")
+        monkeypatch.setattr(project_config, "ASSETS_ROOT", tmp / "assets")
+        assert project_config.assets_dir_for("helix") == tmp / "assets" / "helix"
+
+    def test_unsanitized_name(self, monkeypatch):
+        tmp = Path("/tmp/repo")
+        monkeypatch.setattr(project_config, "ASSETS_ROOT", tmp / "assets")
+        assert project_config.assets_dir_for("My App") == tmp / "assets" / "my_app"
+
+
 class TestResolveProject:
     def test_flag_wins_over_env(self, monkeypatch):
         monkeypatch.setenv("PROJECT", "from_env")

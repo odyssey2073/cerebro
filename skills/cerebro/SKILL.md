@@ -1,7 +1,7 @@
 ---
 name: cerebro
 description: Guided setup and maintenance for CEREBRO (multi-project RAG brain on Qdrant). Use when: user says "/cerebro", "setup cerebro", "new cerebro project", "re-index", "cerebro status", or wants to add/register/index a project into the Qdrant brain, generate CLAUDE.md/copilot-instructions for it, re-index docs, or check collection status.
-version: 1.1.0
+version: 1.2.0
 ---
 
 # CEREBRO — guided setup and maintenance
@@ -46,8 +46,17 @@ Ask what to do:
 
 1. **Project name** (free text). Show the resulting slug: lowercase, every non-alphanumeric sequence → `_` (e.g. `My App` → `my_app` → collection `CRB_my_app`).
 2. **Project root** (absolute path, e.g. `C:\Progetti\helix`). Verify existence with `ls`; if missing, ask whether to create it or fix the path.
-3. **Docs paths**: one or more paths (folders or files). Formats: `.md .txt .pdf .docx .xlsx .pptx .html .htm`. Proposed default: `<root>\docs`. Validate each one. If the user has no docs ready, offer the default `CEREBRO_HOME\projects\<slug>\docs` (create it).
+3. **Docs paths**: one or more paths (folders or files). Formats: `.md .txt .pdf .epub .docx .xlsx .pptx .html .htm`. Proposed default: `<root>\docs`. Validate each one. If the user has no docs ready, offer the default `CEREBRO_HOME\projects\<slug>\docs` (create it).
+   - `.pdf` / `.epub` → Markdown **with extracted images**, linked as `![Figure](images/fig_NNNN.png)`; assets in `assets\<slug>\<source>\` (markdown + `images\`).
+   - Images served by a local static server (port `IMAGES_PORT`, default `8777`), auto-started by ingest. In results: `image_paths` (for Claude's `Read`) + `image_urls` (browser).
+   - Scanned PDFs (images only, no text) → not indexable (OCR out of scope).
 4. **Agent tools**: `both` (default) / `claude` / `copilot` → which instruction files to generate.
+   - `claude` → `CLAUDE.md`
+   - `copilot` → `.github\copilot-instructions.md`
+   - `both` → both files
+5. **Graphify knowledge graph** (only if the project uses Graphify for code-level KG): yes/no.
+   If yes, a `<!-- GRAPHIFY:START/END -->` block is appended to the generated instruction file(s)
+   with rules for `graphify query`, `graphify path`, `graphify explain`, `graphify update .`.
 
 ### 2b. Prerequisites (stop at first error)
 
@@ -66,7 +75,7 @@ curl -s http://localhost:11434              # Ollama
 ```powershell
 cd $env:CEREBRO_HOME
 .venv\Scripts\python scripts\register_project.py add <name> --docs <path1> [<path2> ...] --root <root>
-.venv\Scripts\python scripts\register_project.py instructions <name> --tool <both|claude|copilot>
+.venv\Scripts\python scripts\register_project.py instructions <name> --tool <both|claude|copilot> [--graphify]
 .venv\Scripts\python scripts\ingest_docs.py --project <name>
 ```
 
@@ -83,7 +92,7 @@ Errors on single chunks during ingest: tolerated, report how many were skipped.
 
 ### 2e. Final summary
 
-Report: slug, collection `CRB_<slug>`, files written (`CLAUDE.md`, `.github\copilot-instructions.md`), number of indexed chunks. Close with:
+Report: slug, collection `CRB_<slug>`, files written (`CLAUDE.md`, `.github\copilot-instructions.md`), Graphify block included (yes/no), number of indexed chunks. Close with:
 
 > Open the project and work with Claude Code or Copilot: the generated instructions tell the agent how to query the brain. Optional aliases for manual use: `cerebro-ask --project <slug> "question"` (query) and `cerebro-ingest --project <slug>` (re-index) — see README for alias installation.
 
