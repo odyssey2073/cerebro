@@ -28,6 +28,8 @@
   .badge { font-size: 12px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--border); color: var(--muted); }
   .badge.ok { color: var(--ok); border-color: rgba(34,197,94,.4); }
   .badge.ko { color: var(--err); border-color: rgba(239,68,68,.4); }
+  .closebtn { position: fixed; top: 14px; right: 14px; background: var(--bg2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; z-index: 20; }
+  .closebtn:hover { color: var(--text); border-color: var(--err); }
 
   .wrap { max-width: 1000px; margin: 0 auto; padding: 20px 24px; }
   .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -87,6 +89,7 @@
 </style>
 </head>
 <body>
+<button type="button" id="closeBtn" class="closebtn">✕ Chiudi</button>
 <div class="top">
   <div class="logo">🟧</div>
   <h1>CEREBRO Launcher</h1>
@@ -330,6 +333,12 @@ function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").
 
 // --- init ---
 loadInfo(); loadProjects(); loadStatus();
+
+document.getElementById('closeBtn').onclick = async () => {
+  if (!confirm('Chiudere il launcher?')) return;
+  try { await fetch('/api/shutdown'); } catch (e) {}
+  document.body.innerHTML = '<h2 style="text-align:center;margin-top:100px;color:var(--muted)">Launcher chiuso. Puoi chiudere questa scheda.</h2>';
+};
 setInterval(loadInfo, 15000);
 </script>
 </body>

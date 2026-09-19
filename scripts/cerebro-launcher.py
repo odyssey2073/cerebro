@@ -17,6 +17,7 @@ import os
 import subprocess
 import sys
 import threading
+import time
 import urllib.error
 import urllib.request
 import webbrowser
@@ -39,6 +40,14 @@ IS_WIN = os.name == "nt"
 
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+
+CREATE_NO_WINDOW = 0x08000000 if IS_WIN else 0
+
+
+def _subprocess_env():
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+    return env
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "nomic-embed-text")
 IMAGES_PORT = os.getenv("IMAGES_PORT", "8777")
 
@@ -118,6 +127,21 @@ def _count(collection):
 # --- command building --------------------------------------------------------------------------
 
 
+def _limet_index_update(project):
+    """Return argv to run the project's `limet-index update`, or None if not a LIMET project."""
+    root = project_config.load_registry().get(project, {}).get("root", "")
+    if not root:
+        return None
+    ps1 = os.path.join(root, "limet", "scripts", "limet-index.ps1")
+    sh = os.path.join(root, "limet", "scripts", "limet-index.sh")
+    if IS_WIN and os.path.exists(ps1):
+        return ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                ps1, "update", "-ProjectPath", root, "-CerebroHome", REPO_ROOT]
+    if os.path.exists(sh):
+        return ["bash", sh, "update", "--project-path", root, "--cerebro-home", REPO_ROOT]
+    return None
+
+
 def build_commands(params):
     """Return the ordered list of (label, argv) for the run action."""
     action = params.get("action")
@@ -126,6 +150,9 @@ def build_commands(params):
     ing = os.path.join(HERE, "ingest_docs.py")
 
     if action == "update":
+        limet = _limet_index_update(params["project"])
+        if limet:
+            return [("Re-index (limet-index update)", limet)]
         return [("Re-index", [py, ing, "--project", params["project"]])]
     if action == "remove":
         return [("Remove from registry", [py, reg, "remove", params["project"]])]
@@ -236,6 +263,13 @@ class Handler(BaseHTTPRequestHandler):
                     "collections": entry.get("collections", []),
                 })
             self._json(projects)
+        elif parsed.path == "/api/shutdown":
+            self._json({"ok": "shutting down"})
+
+            def _shutdown():
+                time.sleep(0.3)
+                os._exit(0)
+            threading.Thread(target=_shutdown).start()
         else:
             self.send_response(404)
             self.end_headers()
@@ -275,6 +309,7 @@ class Handler(BaseHTTPRequestHandler):
                 proc = subprocess.Popen(
                     argv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                     text=True, encoding="utf-8", errors="replace", bufsize=1,
+                    env=_subprocess_env(), creationflags=CREATE_NO_WINDOW,
                 )
                 for line in proc.stdout:
                     self._chunk(line)

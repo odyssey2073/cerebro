@@ -166,6 +166,10 @@ def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: st
         print(f"  SKIP (obsidian): {relative_path}")
         return
 
+    if "_templates" in relative_path.parts:
+        print(f"  SKIP (templates): {relative_path}")
+        return
+
     # Asset folder for this document: assets/<slug>/<source_rel>/document.md + images/
     rel_posix = str(relative_path).replace("\\", "/")
     source_subdir = rel_posix.rsplit(".", 1)[0]
