@@ -1,0 +1,417 @@
+{
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\0001-riassegna-pratiche\\CROSS_PROJECT_CHANGE.md": {
+    "mtime": 1791292930.848307,
+    "size": 10586,
+    "source": "0001-riassegna-pratiche\\CROSS_PROJECT_CHANGE.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\riassegna_pratiche\\CW-2867-ANL-Riassegna pratiche-v1.0\\CW-2618-REQ-Riassegna Attivit\u00e0-v1.4.xlsx": {
+    "mtime": 1790065802.0,
+    "size": 59130,
+    "source": "riassegna_pratiche\\CW-2867-ANL-Riassegna pratiche-v1.0\\CW-2618-REQ-Riassegna Attivit\u00e0-v1.4.xlsx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\riassegna_pratiche\\CW-2867-ANL-Riassegna pratiche-v1.0\\CW-2867-SRS-Riassegna pratiche-v1.0.docx": {
+    "mtime": 1791196410.0,
+    "size": 5589994,
+    "source": "riassegna_pratiche\\CW-2867-ANL-Riassegna pratiche-v1.0\\CW-2867-SRS-Riassegna pratiche-v1.0.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\riassegna_pratiche\\CW-2867-ANL-Riassegna pratiche-v1.0\\CW-2867-SRS-Riassegna pratiche-v1.0.pdf": {
+    "mtime": 1791196584.0,
+    "size": 1985600,
+    "source": "riassegna_pratiche\\CW-2867-ANL-Riassegna pratiche-v1.0\\CW-2867-SRS-Riassegna pratiche-v1.0.pdf"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\agents-context.md": {
+    "mtime": 1786371347.47386,
+    "size": 7499,
+    "source": "cosmo\\cosmoauthorization\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\copilot-instructions.md": {
+    "mtime": 1786371371.3463697,
+    "size": 2181,
+    "source": "cosmo\\cosmoauthorization\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\cosmoauthorization-architecture.md": {
+    "mtime": 1786371587.0168126,
+    "size": 6448,
+    "source": "cosmo\\cosmoauthorization\\cosmoauthorization-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\cosmoauthorization-doc.docx": {
+    "mtime": 1786371655.8671014,
+    "size": 39772,
+    "source": "cosmo\\cosmoauthorization\\cosmoauthorization-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\cosmoauthorization-doc.md": {
+    "mtime": 1786371649.1576881,
+    "size": 6161,
+    "source": "cosmo\\cosmoauthorization\\cosmoauthorization-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\issue-template.md": {
+    "mtime": 1786371371.3463697,
+    "size": 1073,
+    "source": "cosmo\\cosmoauthorization\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoauthorization\\memory-bank.md": {
+    "mtime": 1786371445.786081,
+    "size": 5285,
+    "source": "cosmo\\cosmoauthorization\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobe\\agents-context.md": {
+    "mtime": 1785922097.0725236,
+    "size": 4735,
+    "source": "cosmo\\cosmobe\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobe\\copilot-instructions.md": {
+    "mtime": 1785922117.1164691,
+    "size": 1809,
+    "source": "cosmo\\cosmobe\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobe\\issue-template.md": {
+    "mtime": 1785922117.1217031,
+    "size": 757,
+    "source": "cosmo\\cosmobe\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobe\\memory-bank.md": {
+    "mtime": 1785922181.577772,
+    "size": 4865,
+    "source": "cosmo\\cosmobe\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\agents-context.md": {
+    "mtime": 1786370285.8770678,
+    "size": 6444,
+    "source": "cosmo\\cosmobusiness\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\copilot-instructions.md": {
+    "mtime": 1786370307.6029692,
+    "size": 3192,
+    "source": "cosmo\\cosmobusiness\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\cosmobusiness-architecture.md": {
+    "mtime": 1786370654.814203,
+    "size": 6237,
+    "source": "cosmo\\cosmobusiness\\cosmobusiness-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\cosmobusiness-doc.docx": {
+    "mtime": 1786370733.5316834,
+    "size": 39554,
+    "source": "cosmo\\cosmobusiness\\cosmobusiness-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\cosmobusiness-doc.md": {
+    "mtime": 1786370724.770975,
+    "size": 5805,
+    "source": "cosmo\\cosmobusiness\\cosmobusiness-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\issue-template.md": {
+    "mtime": 1786370321.9152184,
+    "size": 1380,
+    "source": "cosmo\\cosmobusiness\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmobusiness\\memory-bank.md": {
+    "mtime": 1786370400.0288205,
+    "size": 6414,
+    "source": "cosmo\\cosmobusiness\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\agents-context.md": {
+    "mtime": 1786353584.4509258,
+    "size": 7808,
+    "source": "cosmo\\cosmocmmn\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\copilot-instructions.md": {
+    "mtime": 1786353610.093959,
+    "size": 3265,
+    "source": "cosmo\\cosmocmmn\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\cosmocmmn-architecture.md": {
+    "mtime": 1786353963.8635056,
+    "size": 6740,
+    "source": "cosmo\\cosmocmmn\\cosmocmmn-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\cosmocmmn-doc.docx": {
+    "mtime": 1786354064.4642167,
+    "size": 39748,
+    "source": "cosmo\\cosmocmmn\\cosmocmmn-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\cosmocmmn-doc.md": {
+    "mtime": 1786354045.3636384,
+    "size": 5949,
+    "source": "cosmo\\cosmocmmn\\cosmocmmn-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\issue-template.md": {
+    "mtime": 1786353630.2835064,
+    "size": 1221,
+    "source": "cosmo\\cosmocmmn\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmocmmn\\memory-bank.md": {
+    "mtime": 1786353695.7963874,
+    "size": 5918,
+    "source": "cosmo\\cosmocmmn\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\agents-context.md": {
+    "mtime": 1786352644.989658,
+    "size": 5574,
+    "source": "cosmo\\cosmoecm\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\copilot-instructions.md": {
+    "mtime": 1786352670.6925547,
+    "size": 3196,
+    "source": "cosmo\\cosmoecm\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\cosmoecm-architecture.md": {
+    "mtime": 1785920328.1921556,
+    "size": 4391,
+    "source": "cosmo\\cosmoecm\\cosmoecm-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\cosmoecm-doc.docx": {
+    "mtime": 1785920410.8508623,
+    "size": 39027,
+    "source": "cosmo\\cosmoecm\\cosmoecm-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\cosmoecm-doc.md": {
+    "mtime": 1785920394.8286428,
+    "size": 4720,
+    "source": "cosmo\\cosmoecm\\cosmoecm-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\issue-template.md": {
+    "mtime": 1786352685.2399113,
+    "size": 1208,
+    "source": "cosmo\\cosmoecm\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmoecm\\memory-bank.md": {
+    "mtime": 1786352790.7343066,
+    "size": 5562,
+    "source": "cosmo\\cosmoecm\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\agents-context.md": {
+    "mtime": 1786355785.1314416,
+    "size": 6429,
+    "source": "cosmo\\cosmopratiche\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\copilot-instructions.md": {
+    "mtime": 1786355807.2686985,
+    "size": 2191,
+    "source": "cosmo\\cosmopratiche\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\cosmopratiche-architecture.md": {
+    "mtime": 1786356176.032984,
+    "size": 5888,
+    "source": "cosmo\\cosmopratiche\\cosmopratiche-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\cosmopratiche-doc-validation.md": {
+    "mtime": 1786356305.90436,
+    "size": 4958,
+    "source": "cosmo\\cosmopratiche\\cosmopratiche-doc-validation.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\cosmopratiche-doc.docx": {
+    "mtime": 1786356271.1662157,
+    "size": 40829,
+    "source": "cosmo\\cosmopratiche\\cosmopratiche-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\cosmopratiche-doc.md": {
+    "mtime": 1786356258.923218,
+    "size": 8432,
+    "source": "cosmo\\cosmopratiche\\cosmopratiche-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\issue-template.md": {
+    "mtime": 1786355825.3108652,
+    "size": 1265,
+    "source": "cosmo\\cosmopratiche\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmopratiche\\memory-bank.md": {
+    "mtime": 1786355934.7722323,
+    "size": 6242,
+    "source": "cosmo\\cosmopratiche\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\agents-context.md": {
+    "mtime": 1786354811.5046306,
+    "size": 4686,
+    "source": "cosmo\\cosmosoap\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\copilot-instructions.md": {
+    "mtime": 1786354838.89159,
+    "size": 2711,
+    "source": "cosmo\\cosmosoap\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\cosmosoap-architecture.md": {
+    "mtime": 1786355246.0019197,
+    "size": 6920,
+    "source": "cosmo\\cosmosoap\\cosmosoap-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\cosmosoap-doc.docx": {
+    "mtime": 1786355343.134437,
+    "size": 40278,
+    "source": "cosmo\\cosmosoap\\cosmosoap-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\cosmosoap-doc.md": {
+    "mtime": 1786355333.172198,
+    "size": 7059,
+    "source": "cosmo\\cosmosoap\\cosmosoap-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\issue-template.md": {
+    "mtime": 1786354853.499909,
+    "size": 1009,
+    "source": "cosmo\\cosmosoap\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmosoap\\memory-bank.md": {
+    "mtime": 1786354968.542032,
+    "size": 6827,
+    "source": "cosmo\\cosmosoap\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\agents-context.md": {
+    "mtime": 1786367777.1157186,
+    "size": 6268,
+    "source": "cosmo\\cosmowcl\\agents-context.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\copilot-instructions.md": {
+    "mtime": 1786367796.7260282,
+    "size": 2647,
+    "source": "cosmo\\cosmowcl\\copilot-instructions.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\cosmowcl-architecture.md": {
+    "mtime": 1786368066.1142519,
+    "size": 7745,
+    "source": "cosmo\\cosmowcl\\cosmowcl-architecture.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\cosmowcl-doc-validation.md": {
+    "mtime": 1786368175.0646534,
+    "size": 3832,
+    "source": "cosmo\\cosmowcl\\cosmowcl-doc-validation.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\cosmowcl-doc.docx": {
+    "mtime": 1786368146.3546295,
+    "size": 40099,
+    "source": "cosmo\\cosmowcl\\cosmowcl-doc.docx"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\cosmowcl-doc.md": {
+    "mtime": 1786368137.3143692,
+    "size": 6576,
+    "source": "cosmo\\cosmowcl\\cosmowcl-doc.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\issue-template.md": {
+    "mtime": 1786367812.3110137,
+    "size": 1020,
+    "source": "cosmo\\cosmowcl\\issue-template.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes\\cosmo\\cosmowcl\\memory-bank.md": {
+    "mtime": 1786367926.88967,
+    "size": 6235,
+    "source": "cosmo\\cosmowcl\\memory-bank.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\MODULE_MAP.md": {
+    "mtime": 1791289371.419355,
+    "size": 6101,
+    "source": "MODULE_MAP.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmodb\\limet\\changes\\0001-riassegna-pratiche\\CHANGE_PROPOSAL.md": {
+    "mtime": 1791293779.1086557,
+    "size": 7587,
+    "source": "0001-riassegna-pratiche\\CHANGE_PROPOSAL.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmodb\\limet\\changes\\0001-riassegna-pratiche\\DESIGN.md": {
+    "mtime": 1791293783.7923152,
+    "size": 12884,
+    "source": "0001-riassegna-pratiche\\DESIGN.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmodb\\limet\\changes\\0001-riassegna-pratiche\\TASK_LIST.md": {
+    "mtime": 1791293789.8569262,
+    "size": 4032,
+    "source": "0001-riassegna-pratiche\\TASK_LIST.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\changes\\0001-riassegna-pratiche\\CHANGE_PROPOSAL.md": {
+    "mtime": 1791291986.5094757,
+    "size": 6748,
+    "source": "0001-riassegna-pratiche\\CHANGE_PROPOSAL.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\changes\\0001-riassegna-pratiche\\DESIGN.md": {
+    "mtime": 1791291995.5403748,
+    "size": 6853,
+    "source": "0001-riassegna-pratiche\\DESIGN.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\changes\\0001-riassegna-pratiche\\SPEC.md": {
+    "mtime": 1791292021.5186055,
+    "size": 10214,
+    "source": "0001-riassegna-pratiche\\SPEC.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\changes\\0001-riassegna-pratiche\\TASK_LIST.md": {
+    "mtime": 1791293654.9902678,
+    "size": 4194,
+    "source": "0001-riassegna-pratiche\\TASK_LIST.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmoauthorization\\limet\\changes\\0001-riassegna-pratiche\\CHANGE_PROPOSAL.md": {
+    "mtime": 1791290990.2044013,
+    "size": 6017,
+    "source": "0001-riassegna-pratiche\\CHANGE_PROPOSAL.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmoauthorization\\limet\\changes\\0001-riassegna-pratiche\\SPEC.md": {
+    "mtime": 1791290171.0261912,
+    "size": 4635,
+    "source": "0001-riassegna-pratiche\\SPEC.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmoauthorization\\limet\\changes\\0001-riassegna-pratiche\\TASK_LIST.md": {
+    "mtime": 1791290969.6094716,
+    "size": 3276,
+    "source": "0001-riassegna-pratiche\\TASK_LIST.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\changes\\0001-riassegna-pratiche\\CHANGE_PROPOSAL.md": {
+    "mtime": 1791291024.9784343,
+    "size": 5218,
+    "source": "0001-riassegna-pratiche\\CHANGE_PROPOSAL.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\changes\\0001-riassegna-pratiche\\DESIGN.md": {
+    "mtime": 1791290319.2717187,
+    "size": 3248,
+    "source": "0001-riassegna-pratiche\\DESIGN.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\changes\\0001-riassegna-pratiche\\SPEC.md": {
+    "mtime": 1791290301.973927,
+    "size": 4734,
+    "source": "0001-riassegna-pratiche\\SPEC.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\changes\\0001-riassegna-pratiche\\TASK_LIST.md": {
+    "mtime": 1791291009.962259,
+    "size": 3800,
+    "source": "0001-riassegna-pratiche\\TASK_LIST.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes\\0001-riassegna-pratiche\\CHANGE_PROPOSAL.md": {
+    "mtime": 1791290410.1210072,
+    "size": 6392,
+    "source": "0001-riassegna-pratiche\\CHANGE_PROPOSAL.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes\\0001-riassegna-pratiche\\DESIGN.md": {
+    "mtime": 1791290472.5362153,
+    "size": 5843,
+    "source": "0001-riassegna-pratiche\\DESIGN.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes\\0001-riassegna-pratiche\\SPEC.md": {
+    "mtime": 1791290443.6353052,
+    "size": 7317,
+    "source": "0001-riassegna-pratiche\\SPEC.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes\\0001-riassegna-pratiche\\TASK-04-motore-riassegnazione.md": {
+    "mtime": 1791290526.1459517,
+    "size": 7131,
+    "source": "0001-riassegna-pratiche\\TASK-04-motore-riassegnazione.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes\\0001-riassegna-pratiche\\TASK_LIST.md": {
+    "mtime": 1791291037.5486243,
+    "size": 3350,
+    "source": "0001-riassegna-pratiche\\TASK_LIST.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\changes\\0001-riassegna-pratiche\\CHANGE_PROPOSAL.md": {
+    "mtime": 1791290612.2611482,
+    "size": 5888,
+    "source": "0001-riassegna-pratiche\\CHANGE_PROPOSAL.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\changes\\0001-riassegna-pratiche\\DESIGN.md": {
+    "mtime": 1791290671.7732332,
+    "size": 3844,
+    "source": "0001-riassegna-pratiche\\DESIGN.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\changes\\0001-riassegna-pratiche\\SPEC.md": {
+    "mtime": 1791290651.8332806,
+    "size": 8812,
+    "source": "0001-riassegna-pratiche\\SPEC.md"
+  },
+  "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\changes\\0001-riassegna-pratiche\\TASK_LIST.md": {
+    "mtime": 1791291045.2276428,
+    "size": 3716,
+    "source": "0001-riassegna-pratiche\\TASK_LIST.md"
+  }
+}

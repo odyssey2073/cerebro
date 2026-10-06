@@ -5,6 +5,7 @@ Usage:
     python scripts/ingest_docs.py --project <name> [path ...]
 """
 import argparse
+import json
 import os
 import re
 import hashlib
@@ -13,7 +14,7 @@ from pathlib import Path
 from urllib.parse import quote
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
-    Distance, VectorParams, PointStruct
+    Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue
 )
 
 from project_config import (
@@ -40,6 +41,7 @@ CHUNK_OVERLAP = 20
 MAX_WORDS_PER_CHUNK = 150
 RETRY_ATTEMPTS = 3
 RETRY_DELAY = 2
+CACHE_DIR = Path(__file__).resolve().parent.parent / "cache"
 
 qdrant = QdrantClient(url=QDRANT_URL)
 
@@ -91,6 +93,61 @@ def setup_collection(collection_name: str):
         print(f"Collection '{collection_name}' created.")
     else:
         print(f"Collection '{collection_name}' already exists.")
+
+
+def _manifest_path(collection_name: str) -> Path:
+    return CACHE_DIR / f"{collection_name}.json"
+
+
+def _load_manifest(collection_name: str) -> dict:
+    """Local, per-collection record of {abs_path: {mtime, size, source}} used to skip
+    unchanged files on re-ingestion. Lives outside Qdrant: losing/deleting this file
+    never removes data, it only forces a full re-index on the next run."""
+    path = _manifest_path(collection_name)
+    if path.exists():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except Exception as e:
+            print(f"  WARN: cache manifest unreadable ({e}), ignoring it (full re-index).")
+    return {}
+
+
+def _save_manifest(collection_name: str, manifest: dict):
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    _manifest_path(collection_name).write_text(
+        json.dumps(manifest, indent=2), encoding="utf-8"
+    )
+
+
+def _delete_points_for_source(collection_name: str, source: str):
+    """Remove previously indexed chunks for a file that no longer exists / was moved.
+    Only called when --prune is passed explicitly; never run by default."""
+    qdrant.delete(
+        collection_name=collection_name,
+        points_selector=Filter(must=[FieldCondition(key="source", match=MatchValue(value=source))]),
+    )
+
+
+def prune_root(collection_name: str, manifest: dict, root: str) -> int:
+    """Clean up chunks previously indexed from a docs root that is no longer scanned at all
+    (e.g. removed from projects.json). Unlike the normal --prune (which only catches files
+    missing from a root that IS still being scanned), this works directly off the local cache
+    manifest, independent of the current registry. Explicit, one-off, opt-in via --prune-root."""
+    root_resolved = str(Path(root).resolve())
+    stale_keys = [k for k in manifest if k.startswith(root_resolved)]
+    removed = 0
+    for k in stale_keys:
+        source = manifest[k].get("source", "")
+        print(f"  PRUNE-ROOT: removing indexed chunks for '{source}' (root: {root})")
+        try:
+            _delete_points_for_source(collection_name, source)
+            removed += 1
+        except Exception as e:
+            print(f"    ERROR pruning {source}: {e}")
+        manifest.pop(k, None)
+    if not stale_keys:
+        print(f"  Nothing cached under '{root}' (already clean, or never ingested with this cache).")
+    return removed
 
 
 IMAGE_ONLY_RE = re.compile(r"^(\s*!\[[^\]]*\]\([^)]+\)\s*)+$")
@@ -218,7 +275,8 @@ def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: st
         qdrant.upsert(collection_name=collection_name, points=points)
 
 
-def ingest_all(docs_path: str, collection_name: str, slug: str):
+def ingest_all(docs_path: str, collection_name: str, slug: str, manifest: dict,
+               force: bool = False, prune: bool = False):
     docs_root = Path(docs_path)
     if not docs_root.exists():
         print(f"Folder '{docs_path}' not found.")
@@ -231,16 +289,58 @@ def ingest_all(docs_path: str, collection_name: str, slug: str):
                   f"(allowed: {', '.join(sorted(SUPPORTED_EXTENSIONS))})")
             return
         doc_files = [docs_root]
+        scan_root = docs_root.parent
     else:
         doc_files = [f for f in docs_root.rglob("*")
                      if f.is_file() and f.suffix.lower() in SUPPORTED_EXTENSIONS]
+        scan_root = docs_root
     print(f"Found {len(doc_files)} files to index in '{docs_root}'...\n")
 
+    current_keys = set()
+    skipped = 0
     for file_path in doc_files:
+        key = str(file_path.resolve())
+        current_keys.add(key)
         try:
-            ingest_file(file_path, docs_root if docs_root.is_dir() else docs_root.parent, collection_name, slug)
+            stat = file_path.stat()
+        except OSError as e:
+            print(f"  ERROR stat {file_path}: {e}")
+            continue
+
+        cached = manifest.get(key)
+        unchanged = (
+            not force and cached
+            and cached.get("mtime") == stat.st_mtime
+            and cached.get("size") == stat.st_size
+        )
+        if unchanged:
+            skipped += 1
+            continue
+
+        try:
+            ingest_file(file_path, scan_root, collection_name, slug)
+            manifest[key] = {
+                "mtime": stat.st_mtime,
+                "size": stat.st_size,
+                "source": str(file_path.relative_to(scan_root)),
+            }
         except Exception as e:
             print(f"  ERROR on {file_path}: {e}")
+
+    if skipped:
+        print(f"  SKIP (unchanged): {skipped} file(s) not re-embedded (use --force to override).")
+
+    if prune:
+        stale_keys = [k for k in manifest
+                      if k.startswith(str(scan_root.resolve())) and k not in current_keys]
+        for k in stale_keys:
+            source = manifest[k].get("source", "")
+            print(f"  PRUNE: removing indexed chunks for missing file '{source}'")
+            try:
+                _delete_points_for_source(collection_name, source)
+            except Exception as e:
+                print(f"    ERROR pruning {source}: {e}")
+            manifest.pop(k, None)
 
     total = qdrant.count(collection_name=collection_name).count
     print(f"\nDone. Total chunks in '{collection_name}': {total}")
@@ -276,6 +376,11 @@ if __name__ == "__main__":
     parser.add_argument("paths", nargs="*",
                         help="Docs folders/files (registry override; default from projects.json or projects/<name>/docs)")
     parser.add_argument("--project", help="Project name (default: PROJECT env var)")
+    parser.add_argument("--force", action="store_true",
+                        help="Ignore the local cache and re-embed every file, even if unchanged")
+    parser.add_argument("--prune", action="store_true",
+                        help="Also remove indexed chunks for files that were deleted/moved since the last run "
+                             "(off by default: nothing is ever deleted from Qdrant unless this flag is passed)")
     args = parser.parse_args()
 
     project = resolve_project(args.project)
@@ -285,6 +390,10 @@ if __name__ == "__main__":
 
     ensure_image_server()
 
+    manifest = _load_manifest(collection_name)
     paths = args.paths or docs_paths_for(project)
-    for p in paths:
-        ingest_all(p, collection_name, slug)
+    try:
+        for p in paths:
+            ingest_all(p, collection_name, slug, manifest, force=args.force, prune=args.prune)
+    finally:
+        _save_manifest(collection_name, manifest)
