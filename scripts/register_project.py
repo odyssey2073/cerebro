@@ -99,20 +99,41 @@ def upsert_block(path: Path, block: str, start: str = BLOCK_START, end: str = BL
 
 
 def cmd_add(args):
+    """Register a project, or update an existing one additively.
+
+    New --docs entries are MERGED into any already-registered docs list (order
+    preserved, duplicates skipped) rather than replacing it, so re-running
+    `add` to register one more path never silently drops previously
+    registered paths. Use --replace-docs to opt into the old overwrite
+    behaviour when a full reset of the docs list is actually intended.
+    """
     slug = sanitize_project_name(args.name)
     registry = load_registry()
-    entry = {"docs": args.docs}
-    if args.root:
-        entry["root"] = args.root
-    if args.collections:
-        entry["collections"] = args.collections
+    existing = registry.get(slug, {})
+
+    if getattr(args, "replace_docs", False):
+        merged_docs = list(args.docs)
+    else:
+        merged_docs = list(existing.get("docs", []))
+        for d in args.docs:
+            if d not in merged_docs:
+                merged_docs.append(d)
+
+    entry = {"docs": merged_docs}
+    root = args.root or existing.get("root")
+    if root:
+        entry["root"] = root
+    collections = args.collections if args.collections else existing.get("collections")
+    if collections:
+        entry["collections"] = collections
+
     registry[slug] = entry
     save_registry(registry)
     print(f"Project '{slug}' registered -> collection {collection_for(slug)}")
-    for d in args.docs:
+    for d in merged_docs:
         print(f"  docs: {d}")
-    if args.root:
-        print(f"  root: {args.root}")
+    if root:
+        print(f"  root: {root}")
     for c in args.collections or []:
         print(f"  extra collection: {c}")
 
@@ -182,6 +203,8 @@ def main():
     a.add_argument("name", help="Project name (sanitized into a slug)")
     a.add_argument("--docs", nargs="+", required=True, help="Project docs folders/files")
     a.add_argument("--root", help="Project root (for instructions generation)")
+    a.add_argument("--replace-docs", action="store_true",
+                    help="Replace the registered docs list instead of merging new paths into it")
     a.add_argument("--collections", nargs="+",
                    help="Extra collections (already existing) to query alongside the primary one")
     a.set_defaults(func=cmd_add)

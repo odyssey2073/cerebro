@@ -391,6 +391,16 @@ if __name__ == "__main__":
     ensure_image_server()
 
     manifest = _load_manifest(collection_name)
+    if manifest:
+        existing = {c.name for c in qdrant.get_collections().collections}
+        if collection_name not in existing or qdrant.count(
+            collection_name=collection_name, exact=True
+        ).count == 0:
+            print(
+                "Cache ignored: collection is missing or empty; "
+                "registered documents will be re-indexed."
+            )
+            manifest = {}
     paths = args.paths or docs_paths_for(project)
     try:
         for p in paths:

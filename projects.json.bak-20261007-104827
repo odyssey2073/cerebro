@@ -1,0 +1,22 @@
+{
+  "csi_cosmo": {
+    "docs": [
+      "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\archive",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\MODULE_MAP.md",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmodb\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmoauthorization\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\changes"
+    ],
+    "root": "C:\\Progetti\\VSC\\CSI-COSMO\\"
+  },
+  "demo": {
+    "docs": [
+      "C:\\c",
+      "C:\\a"
+    ]
+  }
+}

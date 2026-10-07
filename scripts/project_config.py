@@ -9,6 +9,7 @@ Docs fallback: <repo>/projects/<slug>/docs.
 import json
 import os
 import re
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -66,7 +67,15 @@ def resolve_project(explicit: str | None = None) -> str:
 def load_registry() -> dict:
     if not REGISTRY_PATH.exists():
         return {}
-    return json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    content = REGISTRY_PATH.read_text(encoding="utf-8-sig")
+    if not content.strip():
+        save_registry({})
+        print(
+            f"WARNING: registry '{REGISTRY_PATH}' was empty; initialized to {{}}.",
+            file=sys.stderr,
+        )
+        return {}
+    return json.loads(content)
 
 
 def save_registry(registry: dict) -> None:
