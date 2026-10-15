@@ -5,6 +5,7 @@ Usage:
     python scripts/query_qdrant.py --project <name> search "query text" [--limit N] [--source FILTER]
     python scripts/query_qdrant.py --project <name> scroll [--source FILTER] [--limit N] [--offset N]
     python scripts/query_qdrant.py --project <name> count
+    python scripts/query_qdrant.py --project <name> sources [PATTERN]
 """
 import argparse
 import io
@@ -120,6 +121,33 @@ def count(collections: list[str]):
         print(f"Total: {total_all}")
 
 
+def sources(collections: list[str], pattern: str | None = None):
+    needle = pattern.lower() if pattern else None
+    for coll in collections:
+        counts: dict[str, int] = {}
+        offset = None
+        try:
+            while True:
+                body = {"limit": 1000, "with_payload": {"include": ["source"]}, "with_vector": False}
+                if offset is not None:
+                    body["offset"] = offset
+                result = qdrant_post(f"/collections/{coll}/points/scroll", body).get("result", {})
+                for r in result.get("points", []):
+                    src = (r.get("payload") or {}).get("source") or "<senza source>"
+                    counts[src] = counts.get(src, 0) + 1
+                offset = result.get("next_page_offset")
+                if offset is None:
+                    break
+        except requests.RequestException as e:
+            print(f"  [collection '{coll}' unavailable: {e}]", file=sys.stderr)
+            continue
+        if needle:
+            counts = {s: n for s, n in counts.items() if needle in s.lower()}
+        print(f"=== collection: {coll} ({len(counts)} sources, {sum(counts.values())} chunks) ===")
+        for src in sorted(counts):
+            print(f"{counts[src]:5d}  {src}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Query Qdrant via REST")
     parser.add_argument("--project", help="Project name (default: PROJECT env var)")
@@ -137,6 +165,9 @@ def main():
 
     sub.add_parser("count", help="Count points")
 
+    so = sub.add_parser("sources", help="List indexed sources with chunk counts")
+    so.add_argument("pattern", nargs="?", help="Case-insensitive substring filter")
+
     args = parser.parse_args()
 
     project = resolve_project(args.project)
@@ -150,6 +181,8 @@ def main():
             scroll(collections, args.source, args.limit, args.offset)
         elif args.cmd == "count":
             count(collections)
+        elif args.cmd == "sources":
+            sources(collections, args.pattern)
     except requests.RequestException as e:
         print(f"HTTP error: {e}", file=sys.stderr)
         sys.exit(1)

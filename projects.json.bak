@@ -3,8 +3,37 @@
     "docs": [
       "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\changes",
       "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\archive",
-      "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\MODULE_MAP.md"
+      "C:\\Progetti\\VSC\\CSI-COSMO\\limet-workspace\\MODULE_MAP.md",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\docs",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmowcl\\limet\\archive",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmopratiche\\limet\\archive",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmocmmn\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmocmmn\\limet\\archive",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmobusiness\\limet\\archive",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmonotifications\\limet\\archive",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmoauthorization\\limet\\changes",
+      "C:\\Progetti\\VSC\\CSI-COSMO\\cosmoauthorization\\limet\\archive"
     ],
     "root": "C:\\Progetti\\VSC\\CSI-COSMO\\"
+  },
+  "mudeopensrvet": {
+    "docs": [
+      "C:\\Progetti\\VSC\\csi\\mudeopensrvet\\docs",
+      "C:\\Progetti\\VSC\\csi\\mudeopensrvet\\limet\\changes",
+      "C:\\Progetti\\VSC\\csi\\mudeopensrvet\\limet\\archive"
+    ],
+    "root": "C:\\Progetti\\VSC\\csi\\mudeopensrvet\\"
+  },
+  "mudeopenbtcet": {
+    "docs": [
+      "C:\\Progetti\\VSC\\csi\\mudeopenbtcet\\docs",
+      "C:\\Progetti\\VSC\\csi\\mudeopenbtcet\\limet\\changes",
+      "C:\\Progetti\\VSC\\csi\\mudeopenbtcet\\limet\\archive"
+    ],
+    "root": "C:\\Progetti\\VSC\\csi\\mudeopenbtcet\\"
   }
 }
