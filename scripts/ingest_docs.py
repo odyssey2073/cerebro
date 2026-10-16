@@ -23,6 +23,7 @@ from project_config import (
     docs_paths_for,
     load_env,
     resolve_project,
+    root_for,
     sanitize_project_name,
 )
 from doc_to_markdown import extract_image_names, epub_to_markdown, pdf_to_markdown
@@ -216,8 +217,25 @@ def get_chunk_id(file_path: str, chunk_index: int) -> int:
     return int(hashlib.md5(raw.encode()).hexdigest(), 16) % (2**63)
 
 
-def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: str):
+def _source_for(file_path: Path, scan_root: Path, source_root: Path | None) -> str:
+    """Payload/manifest 'source' for a document.
+
+    Relative to the project root when the file lives under it, so that documents sharing a
+    name across modules (e.g. <module>/limet/changes/0001-x/PLAN.md) stay distinguishable
+    and filterable. Falls back to the path relative to the scanned docs root otherwise.
+    """
+    if source_root is not None:
+        try:
+            return str(file_path.resolve().relative_to(source_root))
+        except ValueError:
+            pass
+    return str(file_path.relative_to(scan_root))
+
+
+def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: str,
+                source_root: Path | None = None):
     relative_path = file_path.relative_to(docs_root)
+    source_value = _source_for(file_path, docs_root, source_root)
 
     if str(relative_path).startswith(".obsidian/"):
         print(f"  SKIP (obsidian): {relative_path}")
@@ -245,7 +263,7 @@ def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: st
         title = first_line[2:]
 
     chunks = chunk_text(text)
-    print(f"  {relative_path}: {len(chunks)} chunks")
+    print(f"  {source_value}: {len(chunks)} chunks")
 
     url_base = "/".join(quote(seg) for seg in f"{slug}/{source_subdir}".split("/"))
     points = []
@@ -258,7 +276,7 @@ def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: st
                 vector=vector,
                 payload={
                     "text": chunk,
-                    "source": str(relative_path),
+                    "source": source_value,
                     "title": title,
                     "chunk_index": i,
                     "total_chunks": len(chunks),
@@ -276,7 +294,7 @@ def ingest_file(file_path: Path, docs_root: Path, collection_name: str, slug: st
 
 
 def ingest_all(docs_path: str, collection_name: str, slug: str, manifest: dict,
-               force: bool = False, prune: bool = False):
+               force: bool = False, prune: bool = False, source_root: Path | None = None):
     docs_root = Path(docs_path)
     if not docs_root.exists():
         print(f"Folder '{docs_path}' not found.")
@@ -318,11 +336,11 @@ def ingest_all(docs_path: str, collection_name: str, slug: str, manifest: dict,
             continue
 
         try:
-            ingest_file(file_path, scan_root, collection_name, slug)
+            ingest_file(file_path, scan_root, collection_name, slug, source_root)
             manifest[key] = {
                 "mtime": stat.st_mtime,
                 "size": stat.st_size,
-                "source": str(file_path.relative_to(scan_root)),
+                "source": _source_for(file_path, scan_root, source_root),
             }
         except Exception as e:
             print(f"  ERROR on {file_path}: {e}")
@@ -402,8 +420,13 @@ if __name__ == "__main__":
             )
             manifest = {}
     paths = args.paths or docs_paths_for(project)
+    registry_root = root_for(project)
+    source_root = Path(registry_root).resolve() if registry_root else None
+    if source_root is not None:
+        print(f"Source paths relative to project root: {source_root}\n")
     try:
         for p in paths:
-            ingest_all(p, collection_name, slug, manifest, force=args.force, prune=args.prune)
+            ingest_all(p, collection_name, slug, manifest, force=args.force,
+                       prune=args.prune, source_root=source_root)
     finally:
         _save_manifest(collection_name, manifest)

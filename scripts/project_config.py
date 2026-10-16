@@ -85,6 +85,19 @@ def save_registry(registry: dict) -> None:
     )
 
 
+def root_for(project: str) -> str | None:
+    """Project root from the registry, if any.
+
+    Used to build an unambiguous 'source' for indexed chunks: without it, files with the
+    same relative name under different registered docs paths (e.g. the PLAN.md of every
+    module under <module>/limet/changes/0001-x/) all collapse onto the same source value.
+    """
+    slug = sanitize_project_name(project)
+    entry = load_registry().get(slug)
+    root = (entry or {}).get("root")
+    return root or None
+
+
 def docs_paths_for(project: str) -> list[str]:
     slug = sanitize_project_name(project)
     entry = load_registry().get(slug)

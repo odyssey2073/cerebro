@@ -21,7 +21,8 @@ def main():
     parser.add_argument(
         "--source",
         required=True,
-        help="Relative path of the file to remove",
+        help="Relative path of the file to remove, exactly as stored in the payload "
+         "(relative to the project root when the registry defines one)",
     )
     args = parser.parse_args()
 

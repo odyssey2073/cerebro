@@ -287,7 +287,7 @@ Project maintenance:
 
 - **Docs changed** → re-run ingest (upsert, no duplicates).
 - **New docs folder** → `register_project.py add` with the updated list, then ingest.
-- **Document deleted** → `remove_doc.py --project helix --source "folder\FILE.md"` (`--source` is the path relative to the indexed folder, as shown in the payload).
+- **Document deleted** → `remove_doc.py --project helix --source "module\folder\FILE.md"` (`--source` is the path relative to the project root when the registry defines one, otherwise relative to the indexed folder — in both cases exactly as shown in the payload).
 - **Retire a project** → `register_project.py remove helix`, then delete the Qdrant collection manually if needed: `curl -X DELETE http://localhost:6333/collections/CRB_helix`.
 
 ### Supported document formats
